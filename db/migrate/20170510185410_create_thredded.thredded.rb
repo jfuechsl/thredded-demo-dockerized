@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 # rubocop:disable Metrics/ClassLength
 # rubocop:disable Metrics/MethodLength
-class CreateThredded < ActiveRecord::Migration
+class CreateThredded < ActiveRecord::Migration[5.1]
   def change
     unless table_exists?(:friendly_id_slugs)
       # The user might have installed FriendlyId separately already.
@@ -27,8 +27,8 @@ class CreateThredded < ActiveRecord::Migration
       t.string :description, limit: 255
       t.timestamps null: false
       t.string :slug, limit: 191, null: false
-      t.index [:messageboard_id, :slug], name: :index_thredded_categories_on_messageboard_id_and_slug, unique: true
-      t.index [:messageboard_id], name: :index_thredded_categories_on_messageboard_id
+      t.index [:messageboard_id, :slug], name: :categories_on_messageboard_id_and_slug, unique: true
+      t.index [:messageboard_id], name: :categories_on_messageboard_id
     end
     DbTextSearch::CaseInsensitive.add_index connection, :thredded_categories, :name, name: :thredded_categories_name_ci
 
@@ -42,8 +42,8 @@ class CreateThredded < ActiveRecord::Migration
       t.references :last_topic
       t.references :messageboard_group
       t.timestamps null: false
-      t.index [:messageboard_group_id], name: :index_thredded_messageboards_on_messageboard_group_id
-      t.index [:slug], name: :index_thredded_messageboards_on_slug
+      t.index [:messageboard_group_id], name: :messageboards_on_messageboard_group_id
+      t.index [:slug], name: :messageboards_on_slug
     end
 
     create_table :thredded_posts do |t|
@@ -57,11 +57,11 @@ class CreateThredded < ActiveRecord::Migration
       t.timestamps null: false
       t.index [:moderation_state, :updated_at],
               order: { updated_at: :asc },
-              name:  :index_thredded_posts_for_display
-      t.index [:messageboard_id], name: :index_thredded_posts_on_messageboard_id
-      t.index [:postable_id], name: :index_thredded_posts_on_postable_id
-      t.index [:postable_id], name: :index_thredded_posts_on_postable_id_and_postable_type
-      t.index [:user_id], name: :index_thredded_posts_on_user_id
+              name:  :posts_for_display
+      t.index [:messageboard_id], name: :posts_on_messageboard_id
+      t.index [:postable_id], name: :posts_on_postable_id
+      t.index [:postable_id], name: :posts_on_postable_id_and_postable_type
+      t.index [:user_id], name: :posts_on_user_id
     end
     DbTextSearch::FullText.add_index connection, :thredded_posts, :content, name: :thredded_posts_content_fts
 
@@ -82,23 +82,23 @@ class CreateThredded < ActiveRecord::Migration
       t.string :hash_id, limit: 191, null: false
       t.datetime :last_post_at
       t.timestamps null: false
-      t.index [:hash_id], name: :index_thredded_private_topics_on_hash_id
-      t.index [:slug], name: :index_thredded_private_topics_on_slug
+      t.index [:hash_id], name: :private_topics_on_hash_id
+      t.index [:slug], name: :private_topics_on_slug
     end
 
     create_table :thredded_private_users do |t|
       t.references :private_topic, limit: 4
       t.references :user, limit: 4
       t.timestamps null: false
-      t.index [:private_topic_id], name: :index_thredded_private_users_on_private_topic_id
-      t.index [:user_id], name: :index_thredded_private_users_on_user_id
+      t.index [:private_topic_id], name: :private_users_on_private_topic_id
+      t.index [:user_id], name: :private_users_on_user_id
     end
 
     create_table :thredded_topic_categories do |t|
       t.references :topic, null: false
       t.references :category, null: false
-      t.index [:category_id], name: :index_thredded_topic_categories_on_category_id
-      t.index [:topic_id], name: :index_thredded_topic_categories_on_topic_id
+      t.index [:category_id], name: :topic_categories_on_category_id
+      t.index [:topic_id], name: :topic_categories_on_topic_id
     end
 
     create_table :thredded_topics do |t|
@@ -117,11 +117,11 @@ class CreateThredded < ActiveRecord::Migration
       t.timestamps null: false
       t.index %i(moderation_state sticky updated_at),
               order: { sticky: :desc, updated_at: :desc },
-              name:  :index_thredded_topics_for_display
-      t.index [:hash_id], name: :index_thredded_topics_on_hash_id
-      t.index [:slug], name: :index_thredded_topics_on_slug, unique: true
-      t.index [:messageboard_id], name: :index_thredded_topics_on_messageboard_id
-      t.index [:user_id], name: :index_thredded_topics_on_user_id
+              name:  :topics_for_display
+      t.index [:hash_id], name: :topics_on_hash_id
+      t.index [:slug], name: :topics_on_slug, unique: true
+      t.index [:messageboard_id], name: :topics_on_messageboard_id
+      t.index [:user_id], name: :topics_on_user_id
     end
     DbTextSearch::FullText.add_index connection, :thredded_topics, :title, name: :thredded_topics_title_fts
 
@@ -136,9 +136,9 @@ class CreateThredded < ActiveRecord::Migration
       t.timestamps null: false
       t.index %i(moderation_state moderation_state_changed_at),
               order: { moderation_state_changed_at: :desc },
-              name: :index_thredded_user_details_for_moderations
-      t.index %i(latest_activity_at), name: :index_thredded_user_details_on_latest_activity_at
-      t.index %i(user_id), name: :index_thredded_user_details_on_user_id
+              name: :user_details_for_moderations
+      t.index %i(latest_activity_at), name: :user_details_on_latest_activity_at
+      t.index %i(user_id), name: :user_details_on_user_id
     end
 
     create_table :thredded_messageboard_users do |t|
@@ -146,9 +146,9 @@ class CreateThredded < ActiveRecord::Migration
       t.references :thredded_messageboard, foreign_key: { on_delete: :cascade }, null: false
       t.datetime :last_seen_at, null: false
       t.index [:thredded_messageboard_id, :thredded_user_detail_id],
-              name: :index_thredded_messageboard_users_primary
+              name: :messageboard_users_primary
       t.index [:thredded_messageboard_id, :last_seen_at],
-              name: :index_thredded_messageboard_users_for_recently_active
+              name: :messageboard_users_for_recently_active
     end
 
     create_table :thredded_user_preferences do |t|
@@ -156,7 +156,7 @@ class CreateThredded < ActiveRecord::Migration
       t.boolean :follow_topics_on_mention, default: true, null: false
       t.boolean :auto_follow_topics, default: false, null: false
       t.timestamps null: false
-      t.index [:user_id], name: :index_thredded_user_preferences_on_user_id
+      t.index [:user_id], name: :user_preferences_on_user_id
     end
 
     create_table :thredded_user_messageboard_preferences do |t|
@@ -207,7 +207,7 @@ class CreateThredded < ActiveRecord::Migration
       t.timestamp :created_at, null: false
       t.index [:messageboard_id, :created_at],
               order: { created_at: :desc },
-              name:  :index_thredded_moderation_records_for_display
+              name:  :moderation_records_for_display
     end
 
     create_table :thredded_notifications_for_private_topics do |t|
@@ -239,8 +239,8 @@ class CreateThredded < ActiveRecord::Migration
       t.references :post, null: false
       t.foreign_key :thredded_posts, column: :post_id, on_delete: :cascade
       t.datetime :notified_at, null: false
-      t.index :post_id, name: :index_thredded_user_post_notifications_on_post_id
-      t.index [:user_id, :post_id], name: :index_thredded_user_post_notifications_on_user_id_and_post_id, unique: true
+      t.index :post_id, name: :user_post_notifications_on_post_id
+      t.index [:user_id, :post_id], name: :user_post_notifications_on_user_id_and_post_id, unique: true
     end
   end
 end

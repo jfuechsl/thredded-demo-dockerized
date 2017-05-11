@@ -38,11 +38,12 @@ Rails.application.configure do
   config.active_support.deprecation = :stderr
 
   # Raises error for missing translations
-  # config.action_view.raise_on_missing_translations = true  
+  # config.action_view.raise_on_missing_translations = true
   # Set the default URL options for both Roadie and ActionMailer:
   config.roadie.url_options = config.action_mailer.default_url_options = {
     host: 'localhost',
     port: 3000,
   }
+  config.active_record.belongs_to_required_by_default = false
 
 end

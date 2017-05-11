@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddAdminToUsers < ActiveRecord::Migration[5.0]
+class AddAdminToUsers < ActiveRecord::Migration[5.1]
   def up
     add_column :users, :admin, :boolean, null: false, default: false
   end

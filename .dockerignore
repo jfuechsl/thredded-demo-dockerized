@@ -1,0 +1,5 @@
+.git
+tmp/cache
+tmp/pids
+tmp/sockets
+log/*.log

@@ -7,7 +7,7 @@ RUN apk add --no-cache \
     ruby ruby-bundler ruby-bigdecimal ruby-io-console tzdata nodejs bash \
     # Bundle install deps
     build-base ruby-dev libc-dev linux-headers gmp-dev openssl-dev libxml2-dev \
-    libxslt-dev postgresql-dev
+    libxslt-dev postgresql-dev git libffi-dev
 
 ENV BUNDLE_SILENCE_ROOT_WARNING=1
 
@@ -19,4 +19,6 @@ RUN mkdir -p $APP_HOME
 ADD Gemfile Gemfile.lock $APP_HOME/
 RUN bundle install
 
-ADD Rakefile config.ru app/ bin/ config/ db/ lib/ script/ spec/ $APP_HOME/
+ADD . $APP_HOME/
+
+CMD bundle exec puma
