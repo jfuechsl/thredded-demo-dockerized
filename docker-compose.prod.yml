@@ -3,8 +3,6 @@ version: '2'
 services:
   db:
     image: mysql:5.7
-    ports:
-      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: thredded_dev
@@ -12,15 +10,9 @@ services:
   web:
     build:
       context: .
-    volumes:
-      - .:/demo
-    working_dir: /demo
     environment:
-      DB: mysql
       DB_USERNAME: root
       DB_PASSWORD: root
-    command: >
-      bash -c 'script/wait-for-tcp db 3306 &&
-              rails s'
+      SECRET_KEY_BASE: 3f7e385989131af052c120a6c037d6f4b3caa459a9b0159fd1f212afdf361e4a2c99e4f0159fa24ba92c6aa189002fd5aa479b3e4a8a0093f4fd4d8f2b5cd3c0
     ports:
       - 8080:3000

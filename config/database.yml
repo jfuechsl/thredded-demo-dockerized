@@ -1,11 +1,15 @@
 development:
-  adapter: postgresql
-  host: localhost
-  database: thredded_demo_dev
-  username: postgres
-  password:
+  adapter: mysql2
+  host: db
+  database: thredded_dev
+  username: root
+  password: root
   encoding: utf8
 
 production:
-  url: <%= ENV['DATABASE_URL'].to_json %>
+  adapter: mysql2
+  host: db
+  database: thredded_dev
+  username: <%= ENV["DB_USERNAME"] %>
+  password: <%= ENV["DB_PASSWORD"] %>
   encoding: utf8

@@ -8,8 +8,8 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.0'
-# Use postgresql as the database for Active Record
-gem 'pg', '~> 0.18'
+# Use MySQL as the database for Active Record
+gem 'mysql2', '~> 0.4.9'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Use SCSS for stylesheets
@@ -53,7 +53,7 @@ gem 'rspec-rails', groups: %i(test)
 gem 'capybara', groups: %i(test)
 gem 'config'
 gem 'simple_form'
-gem 'devise', git: 'https://github.com/plataformatec/devise'
+gem 'devise'#, git: 'https://github.com/plataformatec/devise'
 gem 'devise-i18n'
 gem 'rails_email_preview'
 gem 'roadie-rails'
@@ -63,3 +63,4 @@ gem 'rails-timeago'
 gem 'dalli'
 gem 'json'
 gem 'connection_pool'
+gem 'rails_12factor', group: :production
