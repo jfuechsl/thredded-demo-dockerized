@@ -2,7 +2,7 @@
 
 export RAILS_ENV=production
 
-./script/wait-for-tcp db 3306
+./script/wait-for-tcp $DB_HOST 3306
 bundle exec rake db:migrate
 bundle exec rake db:seed
 
