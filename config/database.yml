@@ -8,8 +8,8 @@ development:
 
 production:
   adapter: mysql2
-  host: db
-  database: thredded_dev
+  host: <%= ENV["DB_HOST"] %>
+  database: <%= ENV["DB_DATABASE"] %>
   username: <%= ENV["DB_USERNAME"] %>
   password: <%= ENV["DB_PASSWORD"] %>
   encoding: utf8
